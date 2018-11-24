@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hy_visa/split.dart';
 import 'package:hy_visa/nfc.dart';
+import 'package:hy_visa/blue.dart';
 
 void main() => runApp(HyVisaApp());
 
@@ -107,6 +108,15 @@ class _LoginPageState extends State<LoginPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => Nfc()),
+                );
+              },
+            ),
+            RaisedButton(
+              child: Text('BLUE_TEST'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FlutterBlueApp()),
                 );
               },
             )
