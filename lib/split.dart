@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hy_visa/split_details.dart';
 import 'package:hy_visa/split_participant.dart';
 import 'package:hy_visa/user.dart';
 
@@ -25,7 +26,7 @@ class _SplitPageState extends State<SplitPage>  {
   ];
 
   void addParticipant(User user) {
-    _participants.add(SplitParticipant(user, 0));
+    _participants.add(SplitParticipant(user, 0, 'pending'));
     setState(() {});
   }
 
@@ -85,7 +86,7 @@ class _SplitPageState extends State<SplitPage>  {
     // TODO: push dopiero jak przejdzie save do DB
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SplitPage()),
+      MaterialPageRoute(builder: (context) => SplitDetailsPage()),
     );
   }
 

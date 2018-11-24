@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hy_visa/split_participant.dart';
+import 'package:hy_visa/user.dart';
 
 class SplitDetailsPage extends StatefulWidget {
   @override
@@ -8,53 +9,37 @@ class SplitDetailsPage extends StatefulWidget {
 
 class _SplitDetailsPageState extends State<SplitDetailsPage>  {
 
-  double _totalAmount = 0;
-  List<SplitParticipant> _participants = List<SplitParticipant>();
+  // TODO: get from DB
+  double _totalAmount = 36.89;
+
+  // TODO: get from DB
+  List<SplitParticipant> _participants = [
+    SplitParticipant(User('UID1', 'Konrad Kraszewski'), 12.38, 'pending'),
+    SplitParticipant(User('UID2', 'Robert Kuna'), 8.00, 'pending'),
+    SplitParticipant(User('UID3', 'Patryk Lizoń'), 38.99, 'accepted'),
+    SplitParticipant(User('UID4', 'Aleksander Surman'), 6.66, 'pending'),
+  ];
 
   Widget buildListItem(BuildContext ctx, int index) {
-//    if (index < _participants.length) {
-//      final item = _participants[index];
-//
-//      return ListTile(
-//        leading: Icon(Icons.person),
-//        title: Text(item.user.name),
-//        trailing: IconButton(
-//            icon: Icon(Icons.delete, color: Colors.red),
-//            onPressed: () => removeParticipant(item)
-//        ),
-//      );
-//    } else if (index == _participants.length) {
-//      return ListTile(
-//        title: Text("Friends"),
-//      );
-//    }
-//    else {
-//      final item = notInvited()[index - _participants.length - 1];
-//
-//      return ListTile(
-//        leading: Icon(Icons.person),
-//        title: Text(item.name),
-//        trailing: IconButton(
-//            icon: Icon(Icons.add, color: Colors.green),
-//            onPressed: () => addParticipant(item)
-//        ),
-//      );
-//    }
+    final item = _participants[index];
+
+    return ListTile(
+      leading: Icon(Icons.person),
+      title: Text(item.user.name),
+      subtitle: Text(item.amount.toString() + " PLN"),
+      trailing: Text(item.status),
+    );
   }
 
   void request() {
 
   }
 
-  bool requestDisabled() {
-    return _totalAmount == null || _totalAmount <= 0.01 || _participants.length == 0;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Split payment'),
+        title: Text('Split payment details'),
       ),
       body: Container(
         padding: new EdgeInsets.all(20.0),
@@ -64,19 +49,7 @@ class _SplitDetailsPageState extends State<SplitDetailsPage>  {
             Container(
               padding: new EdgeInsets.only(bottom: 30),
               child:
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Total amount',
-                  ),
-                  keyboardType: TextInputType.number,
-                  onChanged: (String value) {
-                    if (value == null || value.trim().length == 0)
-                      this._totalAmount = 0;
-                    else
-                      this._totalAmount = double.tryParse(value.replaceAll(',', '.'));
-                    setState(() {});
-                  }
-                ),
+                Text("Total amount: " + _totalAmount.toString()),
             ),
             Row(
               children: <Widget>[
@@ -90,11 +63,6 @@ class _SplitDetailsPageState extends State<SplitDetailsPage>  {
                 itemBuilder: buildListItem,
               ),
             ),
-            RaisedButton(
-              child: Text('Save'),
-              onPressed: requestDisabled() ? null : request,
-
-            )
           ],
         ),
       ),// This trailing comma makes auto-formatting nicer for build methods.
