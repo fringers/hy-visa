@@ -4,6 +4,7 @@ import 'package:hy_visa/split.dart';
 import 'package:hy_visa/nfc.dart';
 import 'package:hy_visa/blue.dart';
 import 'package:hy_visa/confirm.dart';
+import 'package:hy_visa/api.dart';
 
 void main() => runApp(HyVisaApp());
 
@@ -81,13 +82,13 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextField(
-              decoration: InputDecoration(
-                hintText: 'Email',
-              ),
-              keyboardType: TextInputType.emailAddress,
-              onChanged: (String value) {
-              this._email = value;
-            }),
+                decoration: InputDecoration(
+                  hintText: 'Email',
+                ),
+                keyboardType: TextInputType.emailAddress,
+                onChanged: (String value) {
+                  this._email = value;
+                }),
             TextField(
               decoration: InputDecoration(hintText: 'Password'),
               obscureText: true,
@@ -129,7 +130,16 @@ class _LoginPageState extends State<LoginPage> {
                   MaterialPageRoute(builder: (context) => ConfirmScreen()),
                 );
               },
-            )
+            ),
+            RaisedButton(
+              child: Text('API_EXAMPLE'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ApiExample()),
+                );
+              },
+            ),
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
