@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "850472448673",
+    "firebase_url": "https://hy-visa.firebaseio.com",
+    "project_id": "hy-visa",
+    "storage_bucket": "hy-visa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:850472448673:android:4da931a426e3ea3a",
+        "android_client_info": {
+          "package_name": "pl.fringers.hyvisa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "850472448673-t65d03u6tj8dovq89icnk2kjn0ff2jjg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYXouYdXP-jsyvhesY0GzCwsurnfD9H1A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
