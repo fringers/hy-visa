@@ -93,6 +93,7 @@ class _SplitPageState extends State<SplitPage>  {
     _participants.forEach((SplitParticipant sp) => sp.amount = amount);
 
     // TODO: add to DB
+    // _totalAmount - total amount splita
     // _participants - lista participantów
     // _participants[i].amount - kwota dla participanta
     // _participants[i].user.uid - uid participanta
