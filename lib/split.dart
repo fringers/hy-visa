@@ -29,6 +29,8 @@ class _SplitPageState extends State<SplitPage>  {
 
   double _totalAmount = 0;
   List<SplitParticipant> _participants = List<SplitParticipant>();
+
+  // TODO: get this list from DB
   List<User> _friends = [
     User('UID1', 'Robert Kuna'),
     User('UID2', 'Fabian Kapuścik'),
@@ -87,7 +89,13 @@ class _SplitPageState extends State<SplitPage>  {
   }
 
   void request() {
+    double amount = _totalAmount / (_participants.length + 1);
+    _participants.forEach((SplitParticipant sp) => sp.amount = amount);
+
     // TODO: add to DB
+    // _participants - lista participantów
+    // _participants[i].amount - kwota dla participanta
+    // _participants[i].user.uid - uid participanta
     print('REQUEST!!!!!');
   }
 
