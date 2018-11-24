@@ -1,24 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hy_visa/split_participant.dart';
+import 'package:hy_visa/user.dart';
 
-class User {
-  User(String uid, String name) {
-    this.uid = uid;
-    this.name = name;
-  }
-
-  String uid;
-  String name;
-}
-
-class SplitParticipant {
-  SplitParticipant(User user, double amount) {
-    this.user = user;
-    this.amount = amount;
-  }
-
-  User user;
-  double amount;
-}
 
 class SplitPage extends StatefulWidget {
   @override
@@ -98,10 +81,15 @@ class _SplitPageState extends State<SplitPage>  {
     // _participants[i].amount - kwota dla participanta
     // _participants[i].user.uid - uid participanta
     print('REQUEST!!!!!');
+
+    // TODO: push dopiero jak przejdzie save do DB
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SplitPage()),
+    );
   }
 
   bool requestDisabled() {
-    print(_totalAmount);
     return _totalAmount == null || _totalAmount <= 0.01 || _participants.length == 0;
   }
 
