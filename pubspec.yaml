@@ -28,10 +28,10 @@ dev_dependencies:
     sdk: flutter
 
   flutter_nfc_reader:
-    path: flutter-nfc-reader/
+    path: external_libs/flutter-nfc-reader/
 
   flutter_blue:
-    path: flutter-blue/
+    path: external_libs/flutter-blue/
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
