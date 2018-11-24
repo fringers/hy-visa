@@ -81,13 +81,13 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextField(
-                decoration: InputDecoration(
-                  hintText: 'Email',
-                ),
-                keyboardType: TextInputType.emailAddress,
-                onChanged: (String value) {
-                  this._email = value;
-                }),
+              decoration: InputDecoration(
+                hintText: 'Email',
+              ),
+              keyboardType: TextInputType.emailAddress,
+              onChanged: (String value) {
+              this._email = value;
+            }),
             TextField(
               decoration: InputDecoration(hintText: 'Password'),
               obscureText: true,
