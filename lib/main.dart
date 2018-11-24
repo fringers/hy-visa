@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hy_visa/split.dart';
 
 void main() => runApp(HyVisaApp());
 
@@ -41,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
   String _email = '';
   String _password = '';
 
-  Future<FirebaseUser> _handleSignIn() async {
+  Future<void> _handleSignIn() async {
     FirebaseUser user = await _auth.currentUser();
     if (user == null) {
       user = await _auth.signInWithEmailAndPassword(
@@ -50,7 +51,13 @@ class _LoginPageState extends State<LoginPage> {
       );
     }
     print("signed in " + user.email);
-    return user;
+    if (user != null) {
+      print(user);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SplitPage()),
+      );
+    }
   }
 
   @override
@@ -94,7 +101,6 @@ class _LoginPageState extends State<LoginPage> {
                 // Perform some action
                 print('Login: ' + this._email + " " + this._password);
                 _handleSignIn()
-                    .then((FirebaseUser user) => print(user))
                     .catchError((e) => print(e));
               },
             )
