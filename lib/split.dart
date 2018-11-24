@@ -86,6 +86,16 @@ class _SplitPageState extends State<SplitPage>  {
     }
   }
 
+  void request() {
+    // TODO: add to DB
+    print('REQUEST!!!!!');
+  }
+
+  bool requestDisabled() {
+    print(_totalAmount);
+    return _totalAmount == null || _totalAmount <= 0.01 || _participants.length == 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,7 +116,11 @@ class _SplitPageState extends State<SplitPage>  {
                   ),
                   keyboardType: TextInputType.number,
                   onChanged: (String value) {
-                    this._totalAmount = double.parse(value.replaceAll(',', '.'));
+                    if (value == null || value.trim().length == 0)
+                      this._totalAmount = 0;
+                    else
+                      this._totalAmount = double.tryParse(value.replaceAll(',', '.'));
+                    setState(() {});
                   }
                 ),
             ),
@@ -124,6 +138,8 @@ class _SplitPageState extends State<SplitPage>  {
             ),
             RaisedButton(
               child: Text('Save'),
+              onPressed: requestDisabled() ? null : request,
+
             )
           ],
         ),
