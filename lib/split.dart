@@ -15,7 +15,7 @@ class SplitPage extends StatefulWidget {
 class _SplitPageState extends State<SplitPage>  {
 
   final splitPaymentsRef = FirebaseDatabase.instance.reference().child('splitPayments').child(globals.user.uid);
-  List<SplitPayment> splitPayments = new List();
+  // List<SplitPayment> splitPayments = new List();
 
 
   double _totalAmount = 0;
@@ -107,7 +107,7 @@ class _SplitPageState extends State<SplitPage>  {
 
   @override
   Widget build(BuildContext context) {
-    splitPaymentsRef.onChildAdded.listen(_splitPaymentAdded);
+    // splitPaymentsRef.onChildAdded.listen(_splitPaymentAdded);
 
 
     return Scaffold(
@@ -122,26 +122,6 @@ class _SplitPageState extends State<SplitPage>  {
             Text(
               'Split payment'
             ),
-            /*RaisedButton(
-              child: Text('Create SplitPayment as UserA'),
-              onPressed: () async {
-                List<Participant> list = new List.from([Participant(10, 'pending'), Participant(5, 'pending')]);
-                await createSplitPayment(1337, list);
-              }
-            ),
-            RaisedButton(
-                child: Text('invite userB to SplitPayment as UserA'),
-                onPressed: () async {
-                  // await createSplitPayment(1337);
-                  print("imeplment");
-                }
-            ),
-            RaisedButton (
-              child: Text('join splitPayment as UserB'),
-              onPressed: () async {
-                // await toSplitPaymentInvite('uIDB', 10, splitPaymentKey)
-                print("not implemented");
-              },*/
             Container(
               padding: new EdgeInsets.only(bottom: 30),
               child:
@@ -192,6 +172,8 @@ class _SplitPageState extends State<SplitPage>  {
   Future<void> createSplitPayment(var totalAmount, Map participants) { // TODO: @krol chcesz tu od razu podawac tez opcjonalnie liste participants czy w oddzielnej funkcji?
 
     SplitPayment newSplitPayment = SplitPayment(totalAmount, participants);
+
+    globals.splitPayments[0] = newSplitPayment; // TODO: hard coded! only handling one splitpayment
 
     return splitPaymentsRef.child(newSplitPayment.key).set(newSplitPayment.toJson());
   }
