@@ -1,16 +1,11 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:hy_visa/nfc.dart';
-import 'package:hy_visa/blue.dart';
 import 'package:hy_visa/confirm.dart';
-import 'package:hy_visa/api.dart';
 import 'package:hy_visa/split.dart';
 import 'globals.dart' as globals;
 import 'dart:async';
-import 'package:hy_visa/split.dart';
 import 'package:flutter/services.dart';
-import 'package:hy_visa/animation.dart';
 
 void main() => runApp(HyVisaApp());
 
@@ -30,15 +25,6 @@ class HyVisaApp extends StatelessWidget {
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -71,11 +57,14 @@ Future<void> getBluetoothMacAddress(final BuildContext context) async {
 
 class _LoginPageState extends State<LoginPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool isLoading = false;
 
   String _email = '';
   String _password = '';
 
   Future<void> _handleSignIn() async {
+    isLoading = true;
+    setState(() {});
     await _auth.signOut();
     FirebaseUser user = await _auth.currentUser();
     if (user == null) {
@@ -92,6 +81,8 @@ class _LoginPageState extends State<LoginPage> {
       getBluetoothMacAddress(context);
       watchForSplitInvitations();
     }
+    isLoading = false;
+    setState(() {});
   }
 
   void watchForSplitInvitations() {
@@ -116,79 +107,64 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+  _buildProgressBarTile() {
+    return new LinearProgressIndicator();
+  }
+
   @override
   Widget build(BuildContext context) {
+    print('isLoading');
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Container(
-        padding: new EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(
-                decoration: InputDecoration(
-                  hintText: 'Email',
-                ),
-                keyboardType: TextInputType.emailAddress,
-                onChanged: (String value) {
-                  this._email = value;
-                }),
-            TextField(
-              decoration: InputDecoration(hintText: 'Password'),
-              obscureText: true,
-              onChanged: (String value) {
-                this._password = value;
-              },
-            ),
-            RaisedButton(
-              child: Text('Login'),
-              onPressed: () {
-                // Perform some action
-                print('Login: ' + this._email + " " + this._password);
-                _handleSignIn().catchError((e) => print(e));
-              },
-            ),
-            RaisedButton(
-              child: Text('NFC_TEST'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CustomAnimation()),
-                );
-              },
-            ),
-            RaisedButton(
-              child: Text('BLUE_TEST'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FlutterBlueApp()),
-                );
-              },
-            ),
-//            RaisedButton(
-//              child: Text('CONFIRM_SCREEN'),
-//              onPressed: () {
-//                Navigator.push(
-//                  context,
-//                  MaterialPageRoute(builder: (context) => ConfirmScreen()),
-//                );
-//              },
-//            ),
-            RaisedButton(
-              child: Text('API_EXAMPLE'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ApiExample()),
-                );
-              },
-            ),
-          ],
+        appBar: AppBar(
+          title: Text(widget.title),
         ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        body: Stack(
+          children: <Widget>[
+            (isLoading) ? _buildProgressBarTile() : new Container(),
+            Container(
+                padding: new EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Email',
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                        onChanged: (String value) {
+                          this._email = value;
+                        }),
+                    TextField(
+                      decoration: InputDecoration(hintText: 'Password'),
+                      obscureText: true,
+                      onChanged: (String value) {
+                        this._password = value;
+                      },
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 24),
+                    ),
+                    SizedBox(
+                      width: 100.0,
+                      height: 48.0,
+                      child: RaisedButton(
+                        child: Text('Login',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                            )),
+                        color: Theme.of(context).accentColor,
+                        elevation: 4.0,
+                        onPressed: () {
+                          print('Login: ' + this._email + " " + this._password);
+                          _handleSignIn().catchError((e) => print(e));
+                        },
+                      ),
+                    )
+                  ],
+                ))
+          ],
+        ));
   }
 }

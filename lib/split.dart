@@ -18,7 +18,6 @@ class _SplitPageState extends State<SplitPage> {
   // bluetooth
   FlutterBlue _flutterBlue = FlutterBlue.instance;
 
-
   // Scanning
   StreamSubscription _scanSubscription;
   Map<DeviceIdentifier, ScanResult> scanResults = new Map();
@@ -109,23 +108,13 @@ class _SplitPageState extends State<SplitPage> {
   }
 
   _stopScan() {
-//    print("STOOOOOOOOOOOOOOOP");
     _finishedScanning = true;
     _scanSubscription?.cancel();
     _scanSubscription = null;
 
-    // if (_finishedScanning) {
-    // TODO: najlepiej wywołać tu jakoś addParticipant(id_ziomka) jeśli będzie miał takie samo bluetooth jak ze scanResults
-    // TODO: idę spać król, naprawiłem nawigację już przynajmniej
-    // TODO: nie wiem czy jest jakiś .then po builderze, można by było uruchomić pętlę z addParticipant() jeśli finishedScanning === true
-//       print("_finishedScanning i super ss truper" +
-////           item.bluetoothMac +
-//           "dsfsdf" +
-//           scanResults.keys.toString());
-//    // }
-
-    _friendsNearby = _friends.where((UserWithBluetooth u) => scanResults
-          .keys.any((DeviceIdentifier di) => di.id == u.bluetoothMac))
+    _friendsNearby = _friends
+        .where((UserWithBluetooth u) => scanResults.keys
+            .any((DeviceIdentifier di) => di.id == u.bluetoothMac))
         .toList();
 
     print("FN: " + _friendsNearby.length.toString());
@@ -174,15 +163,16 @@ class _SplitPageState extends State<SplitPage> {
   List<UserWithBluetooth> nearby() {
     return _friendsNearby
         .where((UserWithBluetooth user) => _participants
-          .every((SplitParticipant sp) => sp.user.uid != user.uid))
+            .every((SplitParticipant sp) => sp.user.uid != user.uid))
         .toList();
   }
 
   List<UserWithBluetooth> notInvited() {
     return _friends
-        .where((UserWithBluetooth user) => _participants
-            .every((SplitParticipant sp) => sp.user.uid != user.uid)
-          && _friendsNearby.every((UserWithBluetooth nu) => nu.uid != user.uid))
+        .where((UserWithBluetooth user) =>
+            _participants
+                .every((SplitParticipant sp) => sp.user.uid != user.uid) &&
+            _friendsNearby.every((UserWithBluetooth nu) => nu.uid != user.uid))
         .toList();
   }
 
@@ -197,13 +187,11 @@ class _SplitPageState extends State<SplitPage> {
             icon: Icon(Icons.delete, color: Colors.red),
             onPressed: () => removeParticipant(item)),
       );
-    }
-    else if (index == _participants.length) {
+    } else if (index == _participants.length) {
       return ListTile(
         title: Text("Friends nearby"),
       );
-    }
-    else if (index < _participants.length + nearby().length + 1) {
+    } else if (index < _participants.length + nearby().length + 1) {
       final item = nearby()[index - _participants.length - 1];
 
       return ListTile(
@@ -213,14 +201,13 @@ class _SplitPageState extends State<SplitPage> {
             icon: Icon(Icons.add, color: Colors.green),
             onPressed: () => addParticipant(item)),
       );
-    }
-    else if (index == _participants.length + nearby().length + 1) {
+    } else if (index == _participants.length + nearby().length + 1) {
       return ListTile(
-      title: Text("Friends"),
+        title: Text("Friends"),
       );
-    }
-    else {
-      final item = notInvited()[index - _participants.length - 1 - nearby().length - 1];
+    } else {
+      final item =
+          notInvited()[index - _participants.length - 1 - nearby().length - 1];
 
       return ListTile(
         leading: Icon(Icons.person),
@@ -244,9 +231,6 @@ class _SplitPageState extends State<SplitPage> {
   void request() async {
     double amount = _totalAmount / (_participants.length + 1);
     _participants.forEach((SplitParticipant sp) => sp.amount = amount);
-
-//    print('REQUEST!!!!!');
-    // TODO: add some loading
 
     await createSplitPayment(_totalAmount, getFrom(_participants));
 
