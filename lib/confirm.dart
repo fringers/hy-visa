@@ -1,12 +1,17 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'globals.dart' as globals;
 
 void main() {
   runApp(ConfirmScreen());
 }
 
 class ConfirmScreen extends StatelessWidget {
-//  ConfirmScreen({Key key, @required this.todo}) : super(key: key);
-  
+  ConfirmScreen({Key key, @required this.uid, @required this.id}) : super(key: key);
+
+  String uid;
+  String id;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -14,21 +19,54 @@ class ConfirmScreen extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ConfirmPage(title: 'Confirm data exchange'),
+      home: ConfirmPage(title: 'Confirm data exchange', uid: uid, id: id,),
     );
   }
 }
 
 class ConfirmPage extends StatefulWidget {
-  ConfirmPage({Key key, this.title}) : super(key: key);
+  ConfirmPage({Key key, this.title, @required this.uid, @required this.id}) : super(key: key);
 
   final String title;
+  String uid;
+  String id;
 
   @override
   _ConfirmPageState createState() => _ConfirmPageState();
 }
 
 class _ConfirmPageState extends State<ConfirmPage> {
+
+  String name = '';
+  double amount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    print(widget.uid);
+    print(widget.id);
+
+    var splitRef = FirebaseDatabase.instance.reference()
+        .child('splitPayments')
+        .child(widget.uid)
+        .child(widget.id)
+        .child('participants')
+        .child(globals.user.uid)
+        .once().then((DataSnapshot ds) {
+          amount = ds.value['amount'];
+          setState(() {});
+        });
+
+    var userRef = FirebaseDatabase.instance.reference()
+        .child('users')
+        .child(widget.uid)
+        .once().then((DataSnapshot ds) {
+          name = ds.value['name'];
+          setState(() {});
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     var card = SizedBox(
@@ -51,7 +89,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
           ),
           ListTile(
             title: Center(
-                child: Text('Fabian Kapuścik',
+                child: Text(name,
                     style:
                         TextStyle(fontWeight: FontWeight.w300, fontSize: 20))),
           ),
@@ -60,7 +98,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
           ),
           ListTile(
             title: Center(
-                child: Text('60 zł',
+                child: Text(amount.toString() + ' zł',
                     style: TextStyle(
                       color: Colors.blueAccent,
                       fontWeight: FontWeight.w500,

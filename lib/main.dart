@@ -78,7 +78,9 @@ class _LoginPageState extends State<LoginPage> {
         .onChildAdded.listen((Event e) =>
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ConfirmScreen()),
+            MaterialPageRoute(builder: (context) =>
+                ConfirmScreen(uid: e.snapshot.value['uid'], id: e.snapshot.value['id']),
+            )
           )
         );
   }
