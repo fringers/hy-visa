@@ -15,22 +15,14 @@ class SplitPage extends StatefulWidget {
 class _SplitPageState extends State<SplitPage>  {
 
   final splitPaymentsRef = FirebaseDatabase.instance.reference().child('splitPayments').child(globals.user.uid);
+  final usersRef = FirebaseDatabase.instance.reference().child('users');
   List<SplitPayment> splitPayments = new List();
 
 
   double _totalAmount = 0;
   List<SplitParticipant> _participants = List<SplitParticipant>();
-
-  // TODO: get this list from DB
-  List<User> _friends = [
-    User('UID1', 'Robert Kuna'),
-    User('UID2', 'Fabian Kapuścik'),
-    User('UID3', 'Jakub Król'),
-    User('UID4', 'Patryk Lizoń'),
-    User('UID5', 'Aleksander Surman'),
-    User('UID6', 'Konrad Kraszewski'),
-    User('UID7', 'Krystyna Gruba'),
-  ];
+  
+  List<User> _friends = List();
 
   void addParticipant(User user) {
     _participants.add(SplitParticipant(user, 0, 'pending'));
@@ -98,10 +90,22 @@ class _SplitPageState extends State<SplitPage>  {
     return _totalAmount == null || _totalAmount <= 0.01 || _participants.length == 0;
   }
 
+  User dataSnapshotToUser(String key, DataSnapshot ds) {
+    return User(key, ds.value[key]['name']);
+  }
+
   @override
   Widget build(BuildContext context) {
     splitPaymentsRef.onChildAdded.listen(_splitPaymentAdded);
 
+    if (_friends.length == 0) {
+      usersRef.once()
+          .then((DataSnapshot ds) {
+        ds.value.keys.forEach((dynamic key) =>
+            _friends.add(dataSnapshotToUser(key, ds)));
+        setState(() {});
+      });
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -190,7 +194,7 @@ class _SplitPageState extends State<SplitPage>  {
   }
 
   Future<void> toSplitPaymentInvite(var participantID, var participantAmount, var splitPaymentKey) {
-    final splitPayments = FirebaseDatabase.instance.reference().child('splitPayments').child('uIDA');
+    final splitPayments = FirebaseDatabase.instance.reference().child('splitPayments').child(globals.user.uid);
 
     return splitPayments.child(splitPaymentKey).child('participants').child(participantID).set({
       'amount' : participantAmount,
@@ -199,7 +203,7 @@ class _SplitPageState extends State<SplitPage>  {
   }
 
   Future<String> getS() {
-    final splitPayments = FirebaseDatabase.instance.reference().child('splitPayments').child('uIDA');
+    final splitPayments = FirebaseDatabase.instance.reference().child('splitPayments').child(globals.user.uid);
 
     //List
   }
