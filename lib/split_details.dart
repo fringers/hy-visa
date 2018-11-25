@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:hy_visa/split_participant.dart';
+import 'package:hy_visa/split_payment.dart';
 import 'package:hy_visa/user.dart';
 import 'globals.dart' as globals;
 
@@ -13,16 +14,39 @@ class _SplitDetailsPageState extends State<SplitDetailsPage>  {
 
   final activeSplitPaymentRef = FirebaseDatabase.instance.reference().child('splitPayments').child(globals.user.uid).child(globals.activeSplitPayment);
 
-  // TODO: get from DB
-  double get _totalAmount => 36.89;
+  double _totalAmount;
 
-  // TODO: get from DB
-  List<SplitParticipant> _participants = [
-    SplitParticipant(User('UID1', 'Konrad Kraszewski'), 12.38, 'pending'),
-    SplitParticipant(User('UID2', 'Robert Kuna'), 8.00, 'pending'),
-    SplitParticipant(User('UID3', 'Patryk Lizoń'), 38.99, 'accepted'),
-    SplitParticipant(User('UID4', 'Aleksander Surman'), 6.66, 'pending'),
-  ];
+  List<SplitParticipant> _participants = new List<SplitParticipant>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    activeSplitPaymentRef.once().then((DataSnapshot snapshot) {
+      _totalAmount = snapshot.value['totalAmount'].toDouble();
+
+      var userName;
+
+      snapshot.value['participants'].keys.forEach((dynamic key)
+      {
+          FirebaseDatabase.instance.reference()
+          .child('users')
+          .child(key)
+          .once().then((DataSnapshot ds) {
+            userName = ds.value['name'];
+
+
+            User myUser = User(key as String, userName as String);
+
+            SplitParticipant p = SplitParticipant(myUser, double.parse(((snapshot.value['participants'][key]['amount'].toDouble()).toStringAsFixed(2))), snapshot.value['participants'][key]['status']);
+
+            _participants.add(p);
+            setState(() {});
+          });
+      });
+    });
+
+  }
 
   // List<SplitParticipant> _participants = activeSplitPaymentRef.once()
 

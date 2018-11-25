@@ -176,11 +176,11 @@ class _SplitPageState extends State<SplitPage>  {
     print("#### SPLIT PAYMENT ADDED TO DB!!!!!");
   }
 
-  Future<void> createSplitPayment(var totalAmount, Map participants) { // TODO: @krol chcesz tu od razu podawac tez opcjonalnie liste participants czy w oddzielnej funkcji?
+  Future<void> createSplitPayment(var totalAmount, Map participants) {
 
     SplitPayment newSplitPayment = SplitPayment(totalAmount, participants);
 
-    globals.activeSplitPayment = newSplitPayment.key; // TODO: hard coded! only handling one splitpayment
+    globals.activeSplitPayment = newSplitPayment.key;
 
     return splitPaymentsRef.child(newSplitPayment.key).set(newSplitPayment.toJson());
   }

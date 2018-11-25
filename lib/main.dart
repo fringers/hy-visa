@@ -4,7 +4,8 @@ import 'package:hy_visa/nfc.dart';
 import 'package:hy_visa/blue.dart';
 import 'package:hy_visa/confirm.dart';
 import 'package:hy_visa/api.dart';
-import 'package:hy_visa/blue_post_mac.dart';
+//import 'package:hy_visa/blue_post_mac.dart';
+import 'package:hy_visa/split.dart';
 import 'globals.dart' as globals;
 
 void main() => runApp(HyVisaApp());
@@ -62,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => BluePostMAC()),
+        MaterialPageRoute(builder: (context) => SplitPage()),
       );
     }
   }
