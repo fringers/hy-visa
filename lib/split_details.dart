@@ -89,6 +89,7 @@ class _SplitDetailsPageState extends State<SplitDetailsPage>  {
 
     if (_participants.every((SplitParticipant sp) => sp.status == 'confirmed')) {
       redirecting = true;
+      Navigator.pop(context);
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => CustomAnimation(), fullscreenDialog: true),

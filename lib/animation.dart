@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:hy_visa/main.dart';
 import 'dart:io';
 
+import 'package:hy_visa/split.dart';
+
 class AnimatedLogo extends AnimatedWidget {
   static final _sizeTween = Tween<double>(begin: 0.0, end: 220.0);
 
@@ -55,10 +57,12 @@ class _CustomAnimationState extends State<CustomAnimation>
     animation.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         sleep(new Duration(seconds: 2));
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => HyVisaApp()),
-        );
+//        Navigator.push(
+//          context,
+//          MaterialPageRoute(builder: (context) => SplitPage()),
+//        );
+
+        Navigator.pop(context);
       } else if (status == AnimationStatus.dismissed) {
         controller.stop();
       }
