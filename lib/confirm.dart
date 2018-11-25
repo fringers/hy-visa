@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:hy_visa/split.dart';
 import 'globals.dart' as globals;
 
+final _color = const Color(0xFF1A1F70);
+final _colorY = const Color(0xFFDEA300);
+final _colorY2 = const Color(0xFFF7B600);
 
 class ConfirmPage extends StatefulWidget {
-  ConfirmPage({Key key, @required this.id, @required this.uid, @required this.txId}) : super(key: key);
+  ConfirmPage(
+      {Key key, @required this.id, @required this.uid, @required this.txId})
+      : super(key: key);
 
   String id;
   String uid;
@@ -16,7 +21,6 @@ class ConfirmPage extends StatefulWidget {
 }
 
 class _ConfirmPageState extends State<ConfirmPage> {
-
   String name = '';
   double amount = 0;
 
@@ -27,24 +31,28 @@ class _ConfirmPageState extends State<ConfirmPage> {
     print("UID: " + widget.uid);
     print("TxID: " + widget.txId);
 
-    FirebaseDatabase.instance.reference()
+    FirebaseDatabase.instance
+        .reference()
         .child('splitPayments')
         .child(widget.uid)
         .child(widget.txId)
         .child('participants')
         .child(globals.user.uid)
-        .once().then((DataSnapshot ds) {
-          amount = double.parse(ds.value['amount'].toDouble().toStringAsFixed(2));
-          setState(() {});
-        });
+        .once()
+        .then((DataSnapshot ds) {
+      amount = double.parse(ds.value['amount'].toDouble().toStringAsFixed(2));
+      setState(() {});
+    });
 
-    FirebaseDatabase.instance.reference()
+    FirebaseDatabase.instance
+        .reference()
         .child('users')
         .child(widget.uid)
-        .once().then((DataSnapshot ds) {
-          name = ds.value['name'];
-          setState(() {});
-        });
+        .once()
+        .then((DataSnapshot ds) {
+      name = ds.value['name'];
+      setState(() {});
+    });
   }
 
   void confirm() {
@@ -102,7 +110,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
             title: Center(
                 child: Text(amount.toString() + ' zł',
                     style: TextStyle(
-                      color: Colors.blueAccent,
+                      color: _colorY2,
                       fontWeight: FontWeight.w500,
                       fontSize: 56,
                     ))),
@@ -127,7 +135,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
                                 color: Colors.white,
                                 fontSize: 28,
                               )),
-                          color: Theme.of(context).accentColor,
+                          color: _color,
                           elevation: 4.0,
                           onPressed: () {
                             confirm();
@@ -149,7 +157,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
                                 color: Colors.white,
                                 fontSize: 28,
                               )),
-                          color: Colors.redAccent,
+                          color: Colors.red,
                           elevation: 4.0,
                           onPressed: () {
                             // Perform some action
@@ -166,6 +174,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: _color,
         title: Text("Confirm split"),
       ),
       body: Center(
