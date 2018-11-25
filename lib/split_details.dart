@@ -55,10 +55,11 @@ class _SplitDetailsPageState extends State<SplitDetailsPage>  {
 
   _activeSplitPaymentChanged(Event event) {
     print("#### ACTIVE SPLIT PAYMENT CHANGED");
+
   }
 
   Widget buildListItem(BuildContext ctx, int index) {
-    activeSplitPaymentRef.onChildAdded.listen(_activeSplitPaymentChanged);
+    activeSplitPaymentRef.onChildChanged.listen(_activeSplitPaymentChanged);
     final item = _participants[index];
 
     return ListTile(
