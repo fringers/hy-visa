@@ -9,6 +9,9 @@ import 'package:flutter/services.dart';
 
 void main() => runApp(HyVisaApp());
 
+final _color = const Color(0xFF1A1F70);
+final _colorY = const Color(0xFFF7B600);
+
 class HyVisaApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -108,7 +111,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _buildProgressBarTile() {
-    return new LinearProgressIndicator();
+    return new LinearProgressIndicator(
+      backgroundColor: _colorY,
+    );
   }
 
   @override
@@ -117,11 +122,20 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: _color,
           title: Text(widget.title),
         ),
-        body: Stack(
+        body: ListView(
           children: <Widget>[
             (isLoading) ? _buildProgressBarTile() : new Container(),
+            Container(
+              height: 90,
+              margin: const EdgeInsets.only(top: 48),
+              child: Center(
+                  child: Image.asset(
+                "assets/img/visa.png",
+              )),
+            ),
             Container(
                 padding: new EdgeInsets.all(20.0),
                 child: Column(
@@ -143,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                       },
                     ),
                     Container(
-                      margin: const EdgeInsets.only(top: 24),
+                      margin: const EdgeInsets.only(top: 36),
                     ),
                     SizedBox(
                       width: 100.0,
@@ -154,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                               color: Colors.white,
                               fontSize: 18,
                             )),
-                        color: Theme.of(context).accentColor,
+                        color: _color,
                         elevation: 4.0,
                         onPressed: () {
                           print('Login: ' + this._email + " " + this._password);

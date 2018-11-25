@@ -9,6 +9,10 @@ import 'dart:async';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:hy_visa/blue_example.dart';
 
+final _color = const Color(0xFF1A1F70);
+final _colorY = const Color(0xFFDEA300);
+final _colorY2 = const Color(0xFFF7B600);
+
 class SplitPage extends StatefulWidget {
   @override
   State createState() => new _SplitPageState();
@@ -129,7 +133,9 @@ class _SplitPageState extends State<SplitPage> {
   }
 
   _buildProgressBarTile() {
-    return new LinearProgressIndicator();
+    return new LinearProgressIndicator(
+      backgroundColor: _colorY,
+    );
   }
 
   _buildAlertTile() {
@@ -140,10 +146,7 @@ class _SplitPageState extends State<SplitPage> {
           'Bluetooth adapter is ${state.toString().substring(15)}',
           style: Theme.of(context).primaryTextTheme.subhead,
         ),
-        trailing: new Icon(
-          Icons.error,
-          color: Theme.of(context).primaryTextTheme.subhead.color,
-        ),
+        trailing: new Icon(Icons.error),
       ),
     );
   }
@@ -198,7 +201,10 @@ class _SplitPageState extends State<SplitPage> {
         leading: Icon(Icons.person),
         title: Text(item.name),
         trailing: IconButton(
-            icon: Icon(Icons.add, color: Colors.green),
+            icon: Icon(
+              Icons.add,
+              color: _colorY,
+            ),
             onPressed: () => addParticipant(item)),
       );
     } else if (index == _participants.length + nearby().length + 1) {
@@ -213,7 +219,7 @@ class _SplitPageState extends State<SplitPage> {
         leading: Icon(Icons.person),
         title: Text(item.name),
         trailing: IconButton(
-            icon: Icon(Icons.add, color: Colors.green),
+            icon: Icon(Icons.add, color: _colorY),
             onPressed: () => addParticipant(item)),
       );
     }
@@ -264,6 +270,7 @@ class _SplitPageState extends State<SplitPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Split payment'),
+        backgroundColor: _color,
       ),
       body: new Stack(
         children: <Widget>[
@@ -303,18 +310,9 @@ class _SplitPageState extends State<SplitPage> {
                     },
                   ),
                 ),
-                // Expanded(
-                //   child: ListView.builder(
-                //     itemCount: _friends.length + 1,
-                //     itemBuilder: buildListItem,
-                //   ),
-                // ),
-                // Expanded(
-                //     child: new ListView(
-                //   children: tiles,
-                // )),
                 RaisedButton(
                   child: Text('Save'),
+                  color: _colorY2,
                   onPressed: requestDisabled() ? null : request,
                 )
               ],

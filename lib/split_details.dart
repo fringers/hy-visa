@@ -10,9 +10,13 @@ class SplitDetailsPage extends StatefulWidget {
   State createState() => new _SplitDetailsPageState();
 }
 
-class _SplitDetailsPageState extends State<SplitDetailsPage>  {
+final _color = const Color(0xFF1A1F70);
+final _colorY = const Color(0xFFF7B600);
+final _colorY2 = const Color(0xFFDEA300);
 
-  final activeSplitPaymentRef = FirebaseDatabase.instance.reference()
+class _SplitDetailsPageState extends State<SplitDetailsPage> {
+  final activeSplitPaymentRef = FirebaseDatabase.instance
+      .reference()
       .child('splitPayments')
       .child(globals.user.uid)
       .child(globals.activeSplitPayment);
@@ -30,32 +34,36 @@ class _SplitDetailsPageState extends State<SplitDetailsPage>  {
 
       var userName;
 
-      snapshot.value['participants'].keys.forEach((dynamic key)
-      {
-          FirebaseDatabase.instance.reference()
-          .child('users')
-          .child(key)
-          .once().then((DataSnapshot ds) {
-            userName = ds.value['name'];
+      snapshot.value['participants'].keys.forEach((dynamic key) {
+        FirebaseDatabase.instance
+            .reference()
+            .child('users')
+            .child(key)
+            .once()
+            .then((DataSnapshot ds) {
+          userName = ds.value['name'];
 
+          UserWithBluetooth myUser =
+              UserWithBluetooth(key as String, userName as String, "");
 
-            UserWithBluetooth myUser = UserWithBluetooth(key as String, userName as String, "");
+          SplitParticipant p = SplitParticipant(
+              myUser,
+              double.parse(
+                  ((snapshot.value['participants'][key]['amount'].toDouble())
+                      .toStringAsFixed(2))),
+              snapshot.value['participants'][key]['status']);
 
-            SplitParticipant p = SplitParticipant(myUser, double.parse(((snapshot.value['participants'][key]['amount'].toDouble()).toStringAsFixed(2))), snapshot.value['participants'][key]['status']);
-
-            _participants.add(p);
-            setState(() {});
-          });
+          _participants.add(p);
+          setState(() {});
+        });
       });
     });
-
   }
 
   // List<SplitParticipant> _participants = activeSplitPaymentRef.once()
 
   _activeSplitPaymentChanged(Event event) {
     print("#### ACTIVE SPLIT PAYMENT CHANGED");
-
   }
 
   Widget buildListItem(BuildContext ctx, int index) {
@@ -66,7 +74,9 @@ class _SplitDetailsPageState extends State<SplitDetailsPage>  {
       leading: Icon(Icons.person),
       title: Text(item.user.name),
       subtitle: Text(item.amount.toString() + " PLN"),
-      trailing: Text(item.status),
+      trailing: item.status == "pending"
+          ? Icon(Icons.access_time, color: _colorY2)
+          : Icon(Icons.check_circle, color: _color),
     );
   }
 
@@ -77,6 +87,7 @@ class _SplitDetailsPageState extends State<SplitDetailsPage>  {
     return Scaffold(
       appBar: AppBar(
         title: Text('Split payment details'),
+        backgroundColor: _color,
       ),
       body: Container(
         padding: new EdgeInsets.all(20.0),
@@ -96,7 +107,7 @@ class _SplitDetailsPageState extends State<SplitDetailsPage>  {
             ),
           ],
         ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }
