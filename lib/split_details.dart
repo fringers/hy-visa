@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:hy_visa/animation.dart';
 import 'package:hy_visa/split_participant.dart';
 import 'package:hy_visa/split_payment.dart';
 import 'package:hy_visa/user.dart';
@@ -25,37 +26,74 @@ class _SplitDetailsPageState extends State<SplitDetailsPage>  {
   void initState() {
     super.initState();
 
-    activeSplitPaymentRef.once().then((DataSnapshot snapshot) {
-      _totalAmount = snapshot.value['totalAmount'].toDouble();
+    activeSplitPaymentRef.once().then(_parseSnapshot);
+  }
 
-      var userName;
+  _parseSnapshot(DataSnapshot snapshot) {
+    _totalAmount = snapshot.value['totalAmount'].toDouble();
 
-      snapshot.value['participants'].keys.forEach((dynamic key)
-      {
-          FirebaseDatabase.instance.reference()
-          .child('users')
-          .child(key)
-          .once().then((DataSnapshot ds) {
-            userName = ds.value['name'];
+    _parseParticipants(snapshot.value['participants'], false);
+  }
 
+  _parseParticipants(dynamic data, bool update) {
+    print(data);
 
-            UserWithBluetooth myUser = UserWithBluetooth(key as String, userName as String, "");
+    data.keys.forEach((dynamic key)
+    {
+      double amount = double.parse(((data[key]['amount'].toDouble()).toStringAsFixed(2)));
+      String status = data[key]['status'];
 
-            SplitParticipant p = SplitParticipant(myUser, double.parse(((snapshot.value['participants'][key]['amount'].toDouble()).toStringAsFixed(2))), snapshot.value['participants'][key]['status']);
+      if (!update) {
+        FirebaseDatabase.instance.reference()
+            .child('users')
+            .child(key)
+            .once().then((DataSnapshot ds) {
 
-            _participants.add(p);
-            setState(() {});
-          });
-      });
+          var userName = ds.value['name'];
+          UserWithBluetooth myUser = UserWithBluetooth(
+              key as String, userName as String, "");
+
+          SplitParticipant p = SplitParticipant(myUser, amount, status);
+
+          _participants.add(p);
+
+          _validateStatuses();
+
+          setState(() {});
+        });
+      }
+      else {
+        var part = _participants.firstWhere((SplitParticipant sp) => sp.user.uid == key);
+        part.amount = amount;
+        part.status = status;
+
+        _validateStatuses();
+
+        setState(() {});
+      }
     });
-
   }
 
   // List<SplitParticipant> _participants = activeSplitPaymentRef.once()
 
   _activeSplitPaymentChanged(Event event) {
     print("#### ACTIVE SPLIT PAYMENT CHANGED");
+    print(event.snapshot.value);
+    _parseParticipants(event.snapshot.value, true);
+  }
 
+  bool redirecting = false;
+  _validateStatuses() {
+    if (_participants.length <= 0 || redirecting)
+      return;
+
+    if (_participants.every((SplitParticipant sp) => sp.status == 'confirmed')) {
+      redirecting = true;
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => CustomAnimation(), fullscreenDialog: true),
+      );
+    }
   }
 
   Widget buildListItem(BuildContext ctx, int index) {
