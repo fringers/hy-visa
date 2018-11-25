@@ -34,7 +34,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
         .child('participants')
         .child(globals.user.uid)
         .once().then((DataSnapshot ds) {
-          amount = ds.value['amount'];
+          amount = ds.value['amount'].toDouble();
           setState(() {});
         });
 
