@@ -196,7 +196,7 @@ class _SplitPageState extends State<SplitPage>  {
 
     SplitPayment newSplitPayment = SplitPayment(totalAmount, participants);
 
-    return splitPaymentsRef.set(newSplitPayment.toJson());
+    return splitPaymentsRef.child(newSplitPayment.key).set(newSplitPayment.toJson());
   }
 
   Future<void> toSplitPaymentInvite(var participantID, var participantAmount, var splitPaymentKey) {
