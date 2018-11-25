@@ -1,15 +1,15 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:hy_visa/nfc.dart';
+// import 'package:hy_visa/nfc.dart';
 import 'package:hy_visa/blue.dart';
 import 'package:hy_visa/confirm.dart';
 import 'package:hy_visa/api.dart';
 import 'globals.dart' as globals;
 import 'dart:async';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:hy_visa/split.dart';
 import 'package:flutter/services.dart';
+import 'package:hy_visa/animation.dart';
 
 void main() => runApp(HyVisaApp());
 
@@ -99,20 +99,19 @@ class _LoginPageState extends State<LoginPage> {
         .child(globals.user.uid)
         .onChildAdded
         .listen((Event e) {
-          if (e.snapshot.value['status'] != 'pending')
-            return;
+      if (e.snapshot.value['status'] != 'pending') return;
 
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ConfirmPage(
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ConfirmPage(
                   id: e.snapshot.key,
                   uid: e.snapshot.value['uid'],
                   txId: e.snapshot.value['id'],
-              ),
-              fullscreenDialog: true,
-            ));
-        });
+                ),
+            fullscreenDialog: true,
+          ));
+    });
   }
 
   @override
@@ -154,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Nfc()),
+                  MaterialPageRoute(builder: (context) => CustomAnimation()),
                 );
               },
             ),
