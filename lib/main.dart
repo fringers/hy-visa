@@ -1,11 +1,11 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:hy_visa/split.dart';
 import 'package:hy_visa/nfc.dart';
 import 'package:hy_visa/blue.dart';
 import 'package:hy_visa/confirm.dart';
 import 'package:hy_visa/api.dart';
+import 'package:hy_visa/blue_post_mac.dart';
 import 'globals.dart' as globals;
 
 void main() => runApp(HyVisaApp());
@@ -66,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => SplitPage()),
+        MaterialPageRoute(builder: (context) => BluePostMAC()),
       );
     }
   }
