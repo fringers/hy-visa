@@ -10,7 +10,7 @@ class SplitDetailsPage extends StatefulWidget {
 class _SplitDetailsPageState extends State<SplitDetailsPage>  {
 
   // TODO: get from DB
-  double _totalAmount = 36.89;
+  double get _totalAmount => 36.89;
 
   // TODO: get from DB
   List<SplitParticipant> _participants = [
