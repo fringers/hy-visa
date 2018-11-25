@@ -7,17 +7,20 @@ class SplitDetailsPage extends StatefulWidget {
   State createState() => new _SplitDetailsPageState();
 }
 
-class _SplitDetailsPageState extends State<SplitDetailsPage>  {
-
+class _SplitDetailsPageState extends State<SplitDetailsPage> {
   // TODO: get from DB
   double get _totalAmount => 36.89;
 
   // TODO: get from DB
   List<SplitParticipant> _participants = [
-    SplitParticipant(User('UID1', 'Konrad Kraszewski'), 12.38, 'pending'),
-    SplitParticipant(User('UID2', 'Robert Kuna'), 8.00, 'pending'),
-    SplitParticipant(User('UID3', 'Patryk Lizoń'), 38.99, 'accepted'),
-    SplitParticipant(User('UID4', 'Aleksander Surman'), 6.66, 'pending'),
+    SplitParticipant(
+        UserWithBluetooth('UID1', 'Konrad Kraszewski', ''), 12.38, 'pending'),
+    SplitParticipant(
+        UserWithBluetooth('UID2', 'Robert Kuna', ''), 8.00, 'pending'),
+    SplitParticipant(
+        UserWithBluetooth('UID3', 'Patryk Lizoń', ''), 38.99, 'accepted'),
+    SplitParticipant(
+        UserWithBluetooth('UID4', 'Aleksander Surman', ''), 6.66, 'pending'),
   ];
 
   Widget buildListItem(BuildContext ctx, int index) {
@@ -31,9 +34,7 @@ class _SplitDetailsPageState extends State<SplitDetailsPage>  {
     );
   }
 
-  void request() {
-
-  }
+  void request() {}
 
   @override
   Widget build(BuildContext context) {
@@ -48,24 +49,18 @@ class _SplitDetailsPageState extends State<SplitDetailsPage>  {
           children: <Widget>[
             Container(
               padding: new EdgeInsets.only(bottom: 30),
-              child:
-                Text("Total amount: " + _totalAmount.toString()),
+              child: Text("Total amount: " + _totalAmount.toString()),
             ),
-            Row(
-              children: <Widget>[
-                Text('Participants')
-              ]
-            ),
+            Row(children: <Widget>[Text('Participants')]),
             Expanded(
-              child:
-              ListView.builder(
+              child: ListView.builder(
                 itemCount: _participants.length,
                 itemBuilder: buildListItem,
               ),
             ),
           ],
         ),
-      ),// This trailing comma makes auto-formatting nicer for build methods.
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
