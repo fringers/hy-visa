@@ -24,6 +24,18 @@ class _SplitPageState extends State<SplitPage>  {
   
   List<User> _friends = List();
 
+  @override
+  void initState() {
+    super.initState();
+
+    usersRef.once()
+        .then((DataSnapshot ds) {
+      ds.value.keys.where((dynamic key) => key != globals.user.uid)
+          .forEach((dynamic key) => _friends.add(dataSnapshotToUser(key, ds)));
+      setState(() {});
+    });
+  }
+
   void addParticipant(User user) {
     _participants.add(SplitParticipant(user, 0, 'pending'));
     setState(() {});
@@ -104,15 +116,6 @@ class _SplitPageState extends State<SplitPage>  {
   @override
   Widget build(BuildContext context) {
     splitPaymentsRef.onChildAdded.listen(_splitPaymentAdded);
-
-    if (_friends.length == 0) {
-      usersRef.once()
-          .then((DataSnapshot ds) {
-        ds.value.keys.forEach((dynamic key) =>
-            _friends.add(dataSnapshotToUser(key, ds)));
-        setState(() {});
-      });
-    }
 
     return Scaffold(
       appBar: AppBar(
