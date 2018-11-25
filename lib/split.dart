@@ -71,6 +71,13 @@ class _SplitPageState extends State<SplitPage>  {
     }
   }
 
+  Map<String, SplitParticipant> getFrom(List<SplitParticipant> list) {
+    final Map<String, SplitParticipant> m = Map<String, SplitParticipant>();
+
+    list.forEach((sp) {m[sp.user.uid] = sp;});
+    return m;
+  }
+
   void request() async {
     double amount = _totalAmount / (_participants.length + 1);
     _participants.forEach((SplitParticipant sp) => sp.amount = amount);
@@ -78,7 +85,7 @@ class _SplitPageState extends State<SplitPage>  {
     print('REQUEST!!!!!');
     // TODO: add some loading
 
-    await createSplitPayment(_totalAmount, _participants);
+    await createSplitPayment(_totalAmount, getFrom(_participants));
 
     Navigator.push(
       context,
@@ -186,11 +193,11 @@ class _SplitPageState extends State<SplitPage>  {
     print("#### SPLIT PAYMENT ADDED TO DB!!!!!");
   }
 
-  Future<void> createSplitPayment(var totalAmount, List<SplitParticipant> participants) { // TODO: @krol chcesz tu od razu podawac tez opcjonalnie liste participants czy w oddzielnej funkcji?
+  Future<void> createSplitPayment(var totalAmount, Map participants) { // TODO: @krol chcesz tu od razu podawac tez opcjonalnie liste participants czy w oddzielnej funkcji?
 
     SplitPayment newSplitPayment = SplitPayment(totalAmount, participants);
 
-    return splitPaymentsRef.set(newSplitPayment.toJson());
+    return splitPaymentsRef.child(newSplitPayment.key).set(newSplitPayment.toJson());
   }
 
   Future<void> toSplitPaymentInvite(var participantID, var participantAmount, var splitPaymentKey) {

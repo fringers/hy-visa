@@ -5,7 +5,8 @@ class SplitPayment {
   var key;
   var status;
   var totalAmount;
-  List<SplitParticipant> participants; // todo map here [splitparticipant.user.uid]splitpartiipant
+  //List<SplitParticipant> participants; // todo map here [splitparticipant.user.uid]splitpartiipant
+  Map<String, SplitParticipant> participants;
 
   SplitPayment(this.totalAmount, this.participants) {
     this.status = 'active';
@@ -15,9 +16,8 @@ class SplitPayment {
 
   Map<String, dynamic> toJson() =>
       {
-        'key': key,
         'status': status,
         'totalAmount': totalAmount,
-        'participants': participants.map((p) => p.toJson()).toList()
+        'participants': Map.fromIterable(participants.keys, value: (key) => participants[key].toJson()) //participants.map((p) => p.toJson()).toList()
       };
 }
