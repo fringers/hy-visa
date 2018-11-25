@@ -1,32 +1,74 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:hy_visa/split.dart';
+import 'globals.dart' as globals;
 
-void main() {
-  runApp(ConfirmScreen());
-}
-
-class ConfirmScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: ConfirmPage(title: 'Confirm data exchange'),
-    );
-  }
-}
 
 class ConfirmPage extends StatefulWidget {
-  ConfirmPage({Key key, this.title}) : super(key: key);
+  ConfirmPage({Key key, @required this.id, @required this.uid, @required this.txId}) : super(key: key);
 
-  final String title;
+  String id;
+  String uid;
+  String txId;
 
   @override
   _ConfirmPageState createState() => _ConfirmPageState();
 }
 
 class _ConfirmPageState extends State<ConfirmPage> {
+
+  String name = '';
+  double amount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    print("UID: " + widget.uid);
+    print("TxID: " + widget.txId);
+
+    FirebaseDatabase.instance.reference()
+        .child('splitPayments')
+        .child(widget.uid)
+        .child(widget.txId)
+        .child('participants')
+        .child(globals.user.uid)
+        .once().then((DataSnapshot ds) {
+          amount = ds.value['amount'].toDouble();
+          setState(() {});
+        });
+
+    FirebaseDatabase.instance.reference()
+        .child('users')
+        .child(widget.uid)
+        .once().then((DataSnapshot ds) {
+          name = ds.value['name'];
+          setState(() {});
+        });
+  }
+
+  void confirm() {
+    FirebaseDatabase.instance
+        .reference()
+        .child('externalSplitPayments')
+        .child(globals.user.uid)
+        .child(widget.id)
+        .child('status')
+        .set('confirmed');
+
+    FirebaseDatabase.instance
+        .reference()
+        .child('splitPayments')
+        .child(widget.uid)
+        .child(widget.txId)
+        .child('participants')
+        .child(globals.user.uid)
+        .child('status')
+        .set('confirmed');
+
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     var card = SizedBox(
@@ -49,7 +91,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
           ),
           ListTile(
             title: Center(
-                child: Text('Fabian Kapuścik',
+                child: Text(name,
                     style:
                         TextStyle(fontWeight: FontWeight.w300, fontSize: 20))),
           ),
@@ -58,7 +100,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
           ),
           ListTile(
             title: Center(
-                child: Text('60 zł',
+                child: Text(amount.toString() + ' zł',
                     style: TextStyle(
                       color: Colors.blueAccent,
                       fontWeight: FontWeight.w500,
@@ -88,7 +130,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
                           color: Theme.of(context).accentColor,
                           elevation: 4.0,
                           onPressed: () {
-                            // Perform some action
+                            confirm();
                           },
                         ),
                       ))
@@ -124,7 +166,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text("Confirm split"),
       ),
       body: Center(
         child: card,

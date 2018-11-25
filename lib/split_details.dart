@@ -36,7 +36,7 @@ class _SplitDetailsPageState extends State<SplitDetailsPage>  {
             userName = ds.value['name'];
 
 
-            User myUser = User(key as String, userName as String);
+            UserWithBluetooth myUser = UserWithBluetooth(key as String, userName as String, "");
 
             SplitParticipant p = SplitParticipant(myUser, double.parse(((snapshot.value['participants'][key]['amount'].toDouble()).toStringAsFixed(2))), snapshot.value['participants'][key]['status']);
 
@@ -66,9 +66,7 @@ class _SplitDetailsPageState extends State<SplitDetailsPage>  {
     );
   }
 
-  void request() {
-
-  }
+  void request() {}
 
   @override
   Widget build(BuildContext context) {
@@ -83,24 +81,18 @@ class _SplitDetailsPageState extends State<SplitDetailsPage>  {
           children: <Widget>[
             Container(
               padding: new EdgeInsets.only(bottom: 30),
-              child:
-                Text("Total amount: " + _totalAmount.toString()),
+              child: Text("Total amount: " + _totalAmount.toString()),
             ),
-            Row(
-              children: <Widget>[
-                Text('Participants')
-              ]
-            ),
+            Row(children: <Widget>[Text('Participants')]),
             Expanded(
-              child:
-              ListView.builder(
+              child: ListView.builder(
                 itemCount: _participants.length,
                 itemBuilder: buildListItem,
               ),
             ),
           ],
         ),
-      ),// This trailing comma makes auto-formatting nicer for build methods.
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

@@ -1,12 +1,16 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hy_visa/nfc.dart';
 import 'package:hy_visa/blue.dart';
 import 'package:hy_visa/confirm.dart';
 import 'package:hy_visa/api.dart';
-//import 'package:hy_visa/blue_post_mac.dart';
 import 'package:hy_visa/split.dart';
 import 'globals.dart' as globals;
+import 'dart:async';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:hy_visa/split.dart';
+import 'package:flutter/services.dart';
 
 void main() => runApp(HyVisaApp());
 
@@ -42,6 +46,29 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
+Future<void> getBluetoothMacAddress(final BuildContext context) async {
+  const platform =
+      const MethodChannel('samples.flutter.io/getBluetoothMacAddress');
+  try {
+    final String bluetoothMacAddress =
+        await platform.invokeMethod('getBluetoothMacAddress');
+
+    final userRef = FirebaseDatabase.instance
+        .reference()
+        .child('users')
+        .child(globals.user.uid);
+    userRef.child('bluetoothMac').set(bluetoothMacAddress);
+    print("bluetoothMac updated!!!");
+  } on PlatformException catch (e) {
+    print("Failed to get battery level: '${e.message}'.");
+  }
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => SplitPage()),
+  );
+}
+
 class _LoginPageState extends State<LoginPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -49,6 +76,7 @@ class _LoginPageState extends State<LoginPage> {
   String _password = '';
 
   Future<void> _handleSignIn() async {
+    await _auth.signOut();
     FirebaseUser user = await _auth.currentUser();
     if (user == null) {
       user = await _auth.signInWithEmailAndPassword(
@@ -61,21 +89,36 @@ class _LoginPageState extends State<LoginPage> {
       print(user);
       globals.user = user;
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SplitPage()),
-      );
+      getBluetoothMacAddress(context);
+      watchForSplitInvitations();
     }
+  }
+
+  void watchForSplitInvitations() {
+    FirebaseDatabase.instance
+        .reference()
+        .child('externalSplitPayments')
+        .child(globals.user.uid)
+        .onChildAdded
+        .listen((Event e) {
+          if (e.snapshot.value['status'] != 'pending')
+            return;
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ConfirmPage(
+                  id: e.snapshot.key,
+                  uid: e.snapshot.value['uid'],
+                  txId: e.snapshot.value['id'],
+              ),
+              fullscreenDialog: true,
+            ));
+        });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -126,15 +169,15 @@ class _LoginPageState extends State<LoginPage> {
                 );
               },
             ),
-            RaisedButton(
-              child: Text('CONFIRM_SCREEN'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ConfirmScreen()),
-                );
-              },
-            ),
+//            RaisedButton(
+//              child: Text('CONFIRM_SCREEN'),
+//              onPressed: () {
+//                Navigator.push(
+//                  context,
+//                  MaterialPageRoute(builder: (context) => ConfirmScreen()),
+//                );
+//              },
+//            ),
             RaisedButton(
               child: Text('API_EXAMPLE'),
               onPressed: () {
