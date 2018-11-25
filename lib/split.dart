@@ -368,7 +368,7 @@ class _SplitPageState extends State<SplitPage> {
         'status': 'pending',
       });
     }
-
+    globals.activeSplitPayment = newSplitPayment.key;
     return splitPaymentsRef
         .child(newSplitPayment.key)
         .set(newSplitPayment.toJson());

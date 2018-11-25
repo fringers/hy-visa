@@ -12,7 +12,10 @@ class SplitDetailsPage extends StatefulWidget {
 
 class _SplitDetailsPageState extends State<SplitDetailsPage>  {
 
-  final activeSplitPaymentRef = FirebaseDatabase.instance.reference().child('splitPayments').child(globals.user.uid).child(globals.activeSplitPayment);
+  final activeSplitPaymentRef = FirebaseDatabase.instance.reference()
+      .child('splitPayments')
+      .child(globals.user.uid)
+      .child(globals.activeSplitPayment);
 
   double _totalAmount;
 
