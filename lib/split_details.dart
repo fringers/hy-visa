@@ -1,29 +1,61 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:hy_visa/split_participant.dart';
+import 'package:hy_visa/split_payment.dart';
 import 'package:hy_visa/user.dart';
+import 'globals.dart' as globals;
 
 class SplitDetailsPage extends StatefulWidget {
   @override
   State createState() => new _SplitDetailsPageState();
 }
 
-class _SplitDetailsPageState extends State<SplitDetailsPage> {
-  // TODO: get from DB
-  double get _totalAmount => 36.89;
+class _SplitDetailsPageState extends State<SplitDetailsPage>  {
 
-  // TODO: get from DB
-  List<SplitParticipant> _participants = [
-    SplitParticipant(
-        UserWithBluetooth('UID1', 'Konrad Kraszewski', ''), 12.38, 'pending'),
-    SplitParticipant(
-        UserWithBluetooth('UID2', 'Robert Kuna', ''), 8.00, 'pending'),
-    SplitParticipant(
-        UserWithBluetooth('UID3', 'Patryk Lizoń', ''), 38.99, 'accepted'),
-    SplitParticipant(
-        UserWithBluetooth('UID4', 'Aleksander Surman', ''), 6.66, 'pending'),
-  ];
+  final activeSplitPaymentRef = FirebaseDatabase.instance.reference().child('splitPayments').child(globals.user.uid).child(globals.activeSplitPayment);
+
+  double _totalAmount;
+
+  List<SplitParticipant> _participants = new List<SplitParticipant>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    activeSplitPaymentRef.once().then((DataSnapshot snapshot) {
+      _totalAmount = snapshot.value['totalAmount'].toDouble();
+
+      var userName;
+
+      snapshot.value['participants'].keys.forEach((dynamic key)
+      {
+          FirebaseDatabase.instance.reference()
+          .child('users')
+          .child(key)
+          .once().then((DataSnapshot ds) {
+            userName = ds.value['name'];
+
+
+            UserWithBluetooth myUser = UserWithBluetooth(key as String, userName as String, "");
+
+            SplitParticipant p = SplitParticipant(myUser, double.parse(((snapshot.value['participants'][key]['amount'].toDouble()).toStringAsFixed(2))), snapshot.value['participants'][key]['status']);
+
+            _participants.add(p);
+            setState(() {});
+          });
+      });
+    });
+
+  }
+
+  // List<SplitParticipant> _participants = activeSplitPaymentRef.once()
+
+  _activeSplitPaymentChanged(Event event) {
+    print("#### ACTIVE SPLIT PAYMENT CHANGED");
+  }
 
   Widget buildListItem(BuildContext ctx, int index) {
+    activeSplitPaymentRef.onChildAdded.listen(_activeSplitPaymentChanged);
     final item = _participants[index];
 
     return ListTile(

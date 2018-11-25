@@ -18,6 +18,7 @@ class _SplitPageState extends State<SplitPage> {
   // bluetooth
   FlutterBlue _flutterBlue = FlutterBlue.instance;
 
+
   // Scanning
   StreamSubscription _scanSubscription;
   Map<DeviceIdentifier, ScanResult> scanResults = new Map();
@@ -43,8 +44,8 @@ class _SplitPageState extends State<SplitPage> {
       .reference()
       .child('splitPayments')
       .child(globals.user.uid);
+
   final usersRef = FirebaseDatabase.instance.reference().child('users');
-  List<SplitPayment> splitPayments = new List();
 
   double _totalAmount = 0;
   List<SplitParticipant> _participants = List<SplitParticipant>();
@@ -289,26 +290,6 @@ class _SplitPageState extends State<SplitPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Text('Split payment'),
-                /*RaisedButton(
-              child: Text('Create SplitPayment as UserA'),
-              onPressed: () async {
-                List<Participant> list = new List.from([Participant(10, 'pending'), Participant(5, 'pending')]);
-                await createSplitPayment(1337, list);
-              }
-            ),
-            RaisedButton(
-                child: Text('invite userB to SplitPayment as UserA'),
-                onPressed: () async {
-                  // await createSplitPayment(1337);
-                  print("imeplment");
-                }
-            ),
-            RaisedButton (
-              child: Text('join splitPayment as UserB'),
-              onPressed: () async {
-                // await toSplitPaymentInvite('uIDB', 10, splitPaymentKey)
-                print("not implemented");
-              },*/
                 Container(
                   padding: new EdgeInsets.only(bottom: 30),
                   child: TextField(
@@ -405,14 +386,5 @@ class _SplitPageState extends State<SplitPage> {
         .child('participants')
         .child(participantID)
         .set({'amount': participantAmount, 'status': 'invite_pending'});
-  }
-
-  Future<String> getS() {
-    final splitPayments = FirebaseDatabase.instance
-        .reference()
-        .child('splitPayments')
-        .child(globals.user.uid);
-
-    //List
   }
 }

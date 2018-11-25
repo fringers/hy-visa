@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hy_visa/blue.dart';
 import 'package:hy_visa/confirm.dart';
 import 'package:hy_visa/api.dart';
+import 'package:hy_visa/split.dart';
 import 'globals.dart' as globals;
 import 'dart:async';
 import 'package:hy_visa/split.dart';
@@ -87,6 +88,7 @@ class _LoginPageState extends State<LoginPage> {
     if (user != null) {
       print(user);
       globals.user = user;
+
       getBluetoothMacAddress(context);
       watchForSplitInvitations();
     }
