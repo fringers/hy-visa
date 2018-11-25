@@ -5,6 +5,7 @@ import 'package:hy_visa/nfc.dart';
 import 'package:hy_visa/blue.dart';
 import 'package:hy_visa/confirm.dart';
 import 'package:hy_visa/api.dart';
+import 'globals.dart' as globals;
 
 void main() => runApp(HyVisaApp());
 
@@ -54,9 +55,11 @@ class _LoginPageState extends State<LoginPage> {
         password: _password,
       );
     }
-    print("signed in " + user.email);
+
     if (user != null) {
       print(user);
+      globals.user = user;
+
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => SplitPage()),

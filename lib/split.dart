@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:hy_visa/split_payment.dart';
-import 'package:uuid/uuid.dart';
-import 'dart:convert';
 import 'package:hy_visa/split_details.dart';
 import 'package:hy_visa/split_participant.dart';
 import 'package:hy_visa/user.dart';
-
+import 'globals.dart' as globals;
 
 
 class SplitPage extends StatefulWidget {
@@ -16,7 +14,7 @@ class SplitPage extends StatefulWidget {
 
 class _SplitPageState extends State<SplitPage>  {
 
-  final splitPaymentsRef = FirebaseDatabase.instance.reference().child('splitPayments').child('uIDA'); // TODO: add user UID here
+  final splitPaymentsRef = FirebaseDatabase.instance.reference().child('splitPayments').child(globals.user.uid);
   List<SplitPayment> splitPayments = new List();
 
 
@@ -85,19 +83,11 @@ class _SplitPageState extends State<SplitPage>  {
     double amount = _totalAmount / (_participants.length + 1);
     _participants.forEach((SplitParticipant sp) => sp.amount = amount);
 
-    // TODO: add to DB
-    // _totalAmount - total amount splita
-    // _participants - lista participantów
-    // _participants[i].amount - kwota dla participanta
-    // _participants[i].user.uid - uid participanta
+    print('REQUEST!!!!!');
+    // TODO: add some loading
 
     await createSplitPayment(_totalAmount, _participants);
 
-    print('REQUEST!!!!!');
-
-
-
-    // TODO: push dopiero jak przejdzie save do DB
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => SplitDetailsPage()),
