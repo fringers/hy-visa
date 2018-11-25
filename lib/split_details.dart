@@ -1,6 +1,8 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:hy_visa/split_participant.dart';
 import 'package:hy_visa/user.dart';
+import 'globals.dart' as globals;
 
 class SplitDetailsPage extends StatefulWidget {
   @override
@@ -8,6 +10,8 @@ class SplitDetailsPage extends StatefulWidget {
 }
 
 class _SplitDetailsPageState extends State<SplitDetailsPage>  {
+
+  final activeSplitPaymentRef = FirebaseDatabase.instance.reference().child('splitPayments').child(globals.user.uid).child(globals.activeSplitPayment);
 
   // TODO: get from DB
   double get _totalAmount => 36.89;
@@ -20,7 +24,14 @@ class _SplitDetailsPageState extends State<SplitDetailsPage>  {
     SplitParticipant(User('UID4', 'Aleksander Surman'), 6.66, 'pending'),
   ];
 
+  // List<SplitParticipant> _participants = activeSplitPaymentRef.once()
+
+  _activeSplitPaymentChanged(Event event) {
+    print("#### ACTIVE SPLIT PAYMENT CHANGED");
+  }
+
   Widget buildListItem(BuildContext ctx, int index) {
+    activeSplitPaymentRef.onChildAdded.listen(_activeSplitPaymentChanged);
     final item = _participants[index];
 
     return ListTile(
