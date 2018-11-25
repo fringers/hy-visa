@@ -98,12 +98,21 @@ class _LoginPageState extends State<LoginPage> {
         .child('externalSplitPayments')
         .child(globals.user.uid)
         .onChildAdded
-        .listen((Event e) => Navigator.push(
+        .listen((Event e) {
+          if (e.snapshot.value['status'] != 'pending')
+            return;
+
+          Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ConfirmScreen(
-                  uid: e.snapshot.value['uid'], id: e.snapshot.value['id']),
-            )));
+              builder: (context) => ConfirmPage(
+                  id: e.snapshot.key,
+                  uid: e.snapshot.value['uid'],
+                  txId: e.snapshot.value['id'],
+              ),
+              fullscreenDialog: true,
+            ));
+        });
   }
 
   @override

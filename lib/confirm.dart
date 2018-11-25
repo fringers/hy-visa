@@ -1,35 +1,15 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:hy_visa/split.dart';
 import 'globals.dart' as globals;
 
-void main() {
-  runApp(ConfirmScreen());
-}
-
-class ConfirmScreen extends StatelessWidget {
-  ConfirmScreen({Key key, @required this.uid, @required this.id}) : super(key: key);
-
-  String uid;
-  String id;
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: ConfirmPage(title: 'Confirm data exchange', uid: uid, id: id,),
-    );
-  }
-}
 
 class ConfirmPage extends StatefulWidget {
-  ConfirmPage({Key key, this.title, @required this.uid, @required this.id}) : super(key: key);
+  ConfirmPage({Key key, @required this.id, @required this.uid, @required this.txId}) : super(key: key);
 
-  final String title;
-  String uid;
   String id;
+  String uid;
+  String txId;
 
   @override
   _ConfirmPageState createState() => _ConfirmPageState();
@@ -44,13 +24,13 @@ class _ConfirmPageState extends State<ConfirmPage> {
   void initState() {
     super.initState();
 
-    print(widget.uid);
-    print(widget.id);
+    print("UID: " + widget.uid);
+    print("TxID: " + widget.txId);
 
-    var splitRef = FirebaseDatabase.instance.reference()
+    FirebaseDatabase.instance.reference()
         .child('splitPayments')
         .child(widget.uid)
-        .child(widget.id)
+        .child(widget.txId)
         .child('participants')
         .child(globals.user.uid)
         .once().then((DataSnapshot ds) {
@@ -58,13 +38,35 @@ class _ConfirmPageState extends State<ConfirmPage> {
           setState(() {});
         });
 
-    var userRef = FirebaseDatabase.instance.reference()
+    FirebaseDatabase.instance.reference()
         .child('users')
         .child(widget.uid)
         .once().then((DataSnapshot ds) {
           name = ds.value['name'];
           setState(() {});
         });
+  }
+
+  void confirm() {
+    FirebaseDatabase.instance
+        .reference()
+        .child('externalSplitPayments')
+        .child(globals.user.uid)
+        .child(widget.id)
+        .child('status')
+        .set('confirmed');
+
+    FirebaseDatabase.instance
+        .reference()
+        .child('splitPayments')
+        .child(widget.uid)
+        .child(widget.txId)
+        .child('participants')
+        .child(globals.user.uid)
+        .child('status')
+        .set('confirmed');
+
+    Navigator.pop(context);
   }
 
   @override
@@ -128,7 +130,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
                           color: Theme.of(context).accentColor,
                           elevation: 4.0,
                           onPressed: () {
-                            // Perform some action
+                            confirm();
                           },
                         ),
                       ))
@@ -164,7 +166,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text("Confirm split"),
       ),
       body: Center(
         child: card,

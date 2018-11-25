@@ -91,7 +91,7 @@ class _SplitPageState extends State<SplitPage> {
 
   _startScan() {
     _wasScanned = true;
-    print("STAAAAAAAAART");
+//    print("STAAAAAAAAART");
     _scanSubscription = _flutterBlue
         .scan(
       timeout: const Duration(seconds: 8),
@@ -101,8 +101,8 @@ class _SplitPageState extends State<SplitPage> {
     )
         .listen((scanResult) {
       // print('localName: ${scanResult.advertisementData.localName}');
-      print(
-          'manufacturerData: ${scanResult.advertisementData.manufacturerData}');
+//      print(
+//          'manufacturerData: ${scanResult.advertisementData.manufacturerData}');
       // print('serviceData: ${scanResult.advertisementData.serviceData}');
       setState(() {
         scanResults[scanResult.device.id] = scanResult;
@@ -115,7 +115,7 @@ class _SplitPageState extends State<SplitPage> {
   }
 
   _stopScan() {
-    print("STOOOOOOOOOOOOOOOP");
+//    print("STOOOOOOOOOOOOOOOP");
     _finishedScanning = true;
     _scanSubscription?.cancel();
     _scanSubscription = null;
@@ -125,7 +125,7 @@ class _SplitPageState extends State<SplitPage> {
   }
 
   _buildScanResultTiles() {
-    print('testes build build ' + isScanning.toString());
+//    print('testes build build ' + isScanning.toString());
     return scanResults.values.map((r) => ScanResultTile(result: r)).toList();
   }
 
@@ -220,7 +220,7 @@ class _SplitPageState extends State<SplitPage> {
     double amount = _totalAmount / (_participants.length + 1);
     _participants.forEach((SplitParticipant sp) => sp.amount = amount);
 
-    print('REQUEST!!!!!');
+//    print('REQUEST!!!!!');
     // TODO: add some loading
 
     await createSplitPayment(_totalAmount, getFrom(_participants));
@@ -306,7 +306,7 @@ class _SplitPageState extends State<SplitPage> {
                   child: FutureBuilder<dynamic>(
                     future: scanBlue(),
                     builder: (context, snapshot) {
-                      print("update snapshot");
+//                      print("update snapshot");
                       return ListView.builder(
                         itemCount: _friends.length + 1,
                         itemBuilder: buildListItem,
@@ -345,7 +345,7 @@ class _SplitPageState extends State<SplitPage> {
       splitPayments.add(new SplitPayment().fromSnapshot(DataSnapshot snapshot))
     })*/
     // TODO imeplment
-    print("#### SPLIT PAYMENT ADDED TO DB!!!!!");
+//    print("#### SPLIT PAYMENT ADDED TO DB!!!!!");
   }
 
   Future<void> createSplitPayment(var totalAmount, Map participants) async {
@@ -360,8 +360,7 @@ class _SplitPageState extends State<SplitPage> {
           .set({
         'uid': globals.user.uid,
         'id': newSplitPayment.key,
-        // 'status': 'pending',
-//            'amount': participants[key]['amount'],
+        'status': 'pending',
       });
     }
 
