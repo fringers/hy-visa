@@ -196,9 +196,19 @@ class _SplitPageState extends State<SplitPage>  {
     print("#### SPLIT PAYMENT ADDED TO DB!!!!!");
   }
 
-  Future<void> createSplitPayment(var totalAmount, Map participants) { // TODO: @krol chcesz tu od razu podawac tez opcjonalnie liste participants czy w oddzielnej funkcji?
+  Future<void> createSplitPayment(var totalAmount, Map participants) async { // TODO: @krol chcesz tu od razu podawac tez opcjonalnie liste participants czy w oddzielnej funkcji?
 
     SplitPayment newSplitPayment = SplitPayment(totalAmount, participants);
+
+    for (var key in participants.keys) {
+      FirebaseDatabase.instance.reference().child('externalSplitPayments').child(key)
+          .push().set({
+            'uid': globals.user.uid,
+            'id': newSplitPayment.key,
+            'status': 'pending',
+//            'amount': participants[key]['amount'],
+          });
+    }
 
     return splitPaymentsRef.child(newSplitPayment.key).set(newSplitPayment.toJson());
   }

@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hy_visa/split.dart';
@@ -48,6 +49,7 @@ class _LoginPageState extends State<LoginPage> {
   String _password = '';
 
   Future<void> _handleSignIn() async {
+    await _auth.signOut();
     FirebaseUser user = await _auth.currentUser();
     if (user == null) {
       user = await _auth.signInWithEmailAndPassword(
@@ -60,6 +62,8 @@ class _LoginPageState extends State<LoginPage> {
       print(user);
       globals.user = user;
 
+      watchForSplitInvitations();
+
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => SplitPage()),
@@ -67,14 +71,20 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  void watchForSplitInvitations() {
+    FirebaseDatabase.instance.reference()
+        .child('externalSplitPayments')
+        .child(globals.user.uid)
+        .onChildAdded.listen((Event e) =>
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ConfirmScreen()),
+          )
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -125,15 +135,15 @@ class _LoginPageState extends State<LoginPage> {
                 );
               },
             ),
-            RaisedButton(
-              child: Text('CONFIRM_SCREEN'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ConfirmScreen()),
-                );
-              },
-            ),
+//            RaisedButton(
+//              child: Text('CONFIRM_SCREEN'),
+//              onPressed: () {
+//                Navigator.push(
+//                  context,
+//                  MaterialPageRoute(builder: (context) => ConfirmScreen()),
+//                );
+//              },
+//            ),
             RaisedButton(
               child: Text('API_EXAMPLE'),
               onPressed: () {

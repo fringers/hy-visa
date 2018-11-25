@@ -5,6 +5,8 @@ void main() {
 }
 
 class ConfirmScreen extends StatelessWidget {
+//  ConfirmScreen({Key key, @required this.todo}) : super(key: key);
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
