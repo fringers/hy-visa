@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:hy_visa/blue_example.dart';
@@ -75,10 +74,10 @@ class _FlutterBlueAppState extends State<FlutterBlueApp> {
         ]*/
     )
         .listen((scanResult) {
-      print('localName: ${scanResult.advertisementData.localName}');
-      print(
-          'manufacturerData: ${scanResult.advertisementData.manufacturerData}');
-      print('serviceData: ${scanResult.advertisementData.serviceData}');
+      // print('localName: ${scanResult.advertisementData.localName}');
+      // print(
+      //     'manufacturerData: ${scanResult.advertisementData.manufacturerData}');
+      // print('serviceData: ${scanResult.advertisementData.serviceData}');
       setState(() {
         scanResults[scanResult.device.id] = scanResult;
       });

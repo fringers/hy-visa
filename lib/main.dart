@@ -4,8 +4,11 @@ import 'package:hy_visa/nfc.dart';
 import 'package:hy_visa/blue.dart';
 import 'package:hy_visa/confirm.dart';
 import 'package:hy_visa/api.dart';
-import 'package:hy_visa/blue_post_mac.dart';
 import 'globals.dart' as globals;
+import 'dart:async';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:hy_visa/split.dart';
+import 'package:flutter/services.dart';
 
 void main() => runApp(HyVisaApp());
 
@@ -41,6 +44,29 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
+Future<void> getBluetoothMacAddress(final BuildContext context) async {
+  const platform =
+      const MethodChannel('samples.flutter.io/getBluetoothMacAddress');
+  try {
+    final String bluetoothMacAddress =
+        await platform.invokeMethod('getBluetoothMacAddress');
+
+    final userRef = FirebaseDatabase.instance
+        .reference()
+        .child('users')
+        .child(globals.user.uid);
+    userRef.child('bluetoothMac').set(bluetoothMacAddress);
+    print("bluetoothMac updated!!!");
+  } on PlatformException catch (e) {
+    print("Failed to get battery level: '${e.message}'.");
+  }
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => SplitPage()),
+  );
+}
+
 class _LoginPageState extends State<LoginPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -60,10 +86,7 @@ class _LoginPageState extends State<LoginPage> {
       print(user);
       globals.user = user;
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => BluePostMAC()),
-      );
+      getBluetoothMacAddress(context);
     }
   }
 
