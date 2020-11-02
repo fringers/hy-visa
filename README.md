@@ -1,6 +1,6 @@
 # hy_visa
 
-.
+https://fringers.pl/blog/20181125_hack-yeah
 
 ## Getting Started
 
